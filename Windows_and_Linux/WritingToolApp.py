@@ -363,7 +363,7 @@ class WritingToolApp(QtWidgets.QApplication):
             else:
                     system_instruction
                     if option == 'Custom':
-                        prompt = f"{prompt_prefix}Task: {custom_change}\n\nText: {selected_text}"
+                        prompt = f"{prompt_prefix} Task: {custom_change}\n\n Content: {selected_text}"
                     else:
                         prompt = f"{prompt_prefix}{selected_text}"
 
