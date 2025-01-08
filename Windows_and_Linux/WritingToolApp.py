@@ -371,8 +371,8 @@ class WritingToolApp(QtWidgets.QApplication):
                         'You are an assistant that converts text provided by the user into a Markdown table. Output ONLY the table without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user\'s text content. If the text is completely incompatible with this with conversion, output "ERROR_TEXT_INCOMPATIBLE_WITH_REQUEST".'
                     ),
                     'Custom': (
-                        'Make the following change to this text:\n\n',
-                        'You are a writing and coding assistant. You MUST make the user\'s described change to the text or code provided by the user. Output ONLY the appropriately modified text or code without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user\'s text content. If the text or code is absolutely incompatible with the requested change, output "ERROR_TEXT_INCOMPATIBLE_WITH_REQUEST".'
+                        'Carry out the requested task to the content below:\n\n',
+                        'You are a writing and coding assistant. You MUST execute the user\'s <task> for the related <content> provided by the user. Output ONLY the appropriately modified text or code without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user\'s text content.'
                     )
                 }
 
@@ -387,7 +387,7 @@ class WritingToolApp(QtWidgets.QApplication):
                 else:
                     prompt_prefix, system_instruction = option_prompts.get(option, ('', ''))
                     if option == 'Custom':
-                        prompt = f"{prompt_prefix}Described change: {custom_change}\n\nText: {selected_text}"
+                        prompt = f"{prompt_prefix}Task: {custom_change}\n\n Content: {selected_text}"
                     else:
                         prompt = f"{prompt_prefix}{selected_text}"
 
