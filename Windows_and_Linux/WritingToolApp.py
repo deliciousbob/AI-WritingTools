@@ -361,7 +361,6 @@ class WritingToolApp(QtWidgets.QApplication):
                         self.show_message_signal.emit('Error', 'Please select text to use this option.')
                         return
             else:
-                    system_instruction
                     if option == 'Custom':
                         prompt = f"{prompt_prefix} Task: {custom_change}\n\n Content: {selected_text}"
                     else:
