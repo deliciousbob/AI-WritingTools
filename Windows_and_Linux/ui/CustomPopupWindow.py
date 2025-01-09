@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import json
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -18,6 +19,23 @@ class CustomPopupWindow(QtWidgets.QWidget):
         logging.debug('Initializing CustomPopupWindow')
         self.init_ui()
 
+    # Load prompts from prompts.json
+    def load_prompts():
+        prompts_path = os.path.join(os.path.dirname(__file__), 'prompts.json')
+        with open(prompts_path, 'r') as file:
+            prompts = json.load(file)
+        return prompts
+
+    # Initialize the options array dynamically
+    def init_options(self):
+        prompts = load_prompts()
+        options = []
+        for key, value in prompts.items():
+            icon_path = value['icon'] + ('_dark' if colorMode == 'dark' else '_light') + '.png'
+            callback = getattr(self, value['callback'])
+            options.append((key, icon_path, callback))
+        return options
+    
     def init_ui(self):
         """
         Initialize the user interface for the popup window.
@@ -106,17 +124,7 @@ class CustomPopupWindow(QtWidgets.QWidget):
             # Options grid
             options_grid = QtWidgets.QGridLayout()
             options_grid.setSpacing(10)
-
-            options = [
-                ('Proofread', 'icons/magnifying-glass' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_proofread),
-                ('Rewrite', 'icons/rewrite' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_rewrite),
-                ('Friendly', 'icons/smiley-face' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_friendly),
-                ('Professional', 'icons/briefcase' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_professional),
-                ('Concise', 'icons/concise' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_concise),
-                ('Table', 'icons/table' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_table),
-                ('Key Points', 'icons/keypoints' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_keypoints),
-                ('Summary', 'icons/summary' + ('_dark' if colorMode == 'dark' else '_light') + '.png', self.on_summary)
-            ]
+            options = init_options(self)
 
             for i, (label, icon_path, callback) in enumerate(options):
                 button = QtWidgets.QPushButton(label)
