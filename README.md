@@ -173,6 +173,7 @@ Here's how to compile it with PyInstaller and a virtual environment:
 pip install virtualenv
 
 # Create a new virtual environment
+# If you use Pyhton 3.3+ then use: python -m venv myvenv
 virtualenv myvenv
 
 # Activate it
