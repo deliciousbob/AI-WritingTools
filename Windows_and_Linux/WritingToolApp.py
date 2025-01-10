@@ -308,8 +308,8 @@ class WritingToolApp(QtWidgets.QApplication):
         logging.debug(f'Processing option: {option}')
         
         # For Summary, Key Points, Table, and empty text custom prompts, create response window
-        if option in ['Summary', 'Key Points', 'Table'] or (option == 'Custom' and not selected_text.strip()):
-            window_title = "Chat" if (option == 'Custom' and not selected_text.strip()) else option
+        if option in ['Summary', 'Key Points', 'Table'] or (option in ['Custom', 'Custom_Replace'] and not selected_text.strip()):
+            window_title = "Chat" if (option in ['Custom', 'Custom_Replace'] and not selected_text.strip()) else option
             self.current_response_window = self.show_response_window(window_title, selected_text)
             
             # Initialize chat history with text/prompt
@@ -332,13 +332,22 @@ class WritingToolApp(QtWidgets.QApplication):
         threading.Thread(target=self.process_option_thread, args=(option, selected_text, custom_change), daemon=True).start()
 
     def process_option_thread(self, option, selected_text, custom_change=None):
-            """
-            Thread function to process the selected writing option using the AI model.
-            """
+        """
+        Thread function to process the selected writing option using the AI model.
+        """
+        try:
             logging.debug(f'Starting processing thread for option: {option}')
-            # Load prompts from prompts.json
-            with open('prompts.json', 'r', encoding='utf-8') as file:
-                option_prompts = json.load(file)
+
+            # Load options from JSON file
+            prompts_path = os.path.join(os.path.dirname(sys.argv[0]), 'prompts.json')
+            logging.debug(f'Loading prompts-file from {prompts_path}')
+            if os.path.exists(prompts_path):
+                with open(prompts_path, 'r', encoding='utf-8') as file:
+                    option_prompts = json.load(file)
+                    logging.debug('Config loaded successfully')
+            else:
+                logging.debug('Config file not found')
+                option_prompts = None
 
             # Example usage in your existing code
             if selected_text.strip() == '':
@@ -357,46 +366,40 @@ class WritingToolApp(QtWidgets.QApplication):
                     prompt = f"{userprefix}Described change: {custom_change}\n\nText: {selected_text}"
                 else:
                     prompt = f"{userprefix}{selected_text}"
-            
-                # Example of using the callback
-                if callback == "on_proofread":
-                    self.on_proofread()
-                elif callback == "on_rewrite":
-                    self.on_rewrite()
-                # Add other callbacks as needed
-            
-                self.output_queue = ""
-                logging.debug(f'Getting response from provider for option: {option}')
+
+            self.output_queue = ""
+
+            logging.debug(f'Getting response from provider for option: {option}')
                 
-                if option in ['Summary', 'Key Points', 'Table'] or (option == 'Custom' and not selected_text.strip()):
-                    logging.debug('Getting response for window display')
-                    response = self.current_provider.get_response(system_instruction, prompt, return_response=True)
-                    logging.debug(f'Got response of length: {len(response) if response else 0}')
+            if option in ['Summary', 'Key Points', 'Table'] or (option == 'Custom' and not selected_text.strip()):
+                logging.debug('Getting response for window display')
+                response = self.current_provider.get_response(system_instruction, prompt, return_response=True)
+                logging.debug(f'Got response of length: {len(response) if response else 0}')
                     
                     # For custom prompts with no text, add question to chat history
-                    if option == 'Custom' and not selected_text.strip():
-                        self.current_response_window.chat_history.append({
-                            "role": "user",
-                            "content": custom_change
-                        })
-                    
-                    # Set initial response using QMetaObject.invokeMethod to ensure thread safety
-                    if hasattr(self, 'current_response_window'):
-                        QtCore.QMetaObject.invokeMethod(
-                            self.current_response_window,
-                            'set_text',
-                            QtCore.Qt.ConnectionType.QueuedConnection,
-                            QtCore.Q_ARG(str, response)
-                        )
-                        logging.debug('Invoked set_text on response window')
-                else:
-                    logging.debug('Getting response for direct replacement')
-                    self.current_provider.get_response(system_instruction, prompt)
-                    logging.debug('Response processed')
+                if option == 'Custom' and not selected_text.strip():
+                    self.current_response_window.chat_history.append({
+                        "role": "user",
+                        "content": custom_change
+                    })
+                
+                # Set initial response using QMetaObject.invokeMethod to ensure thread safety
+                if hasattr(self, 'current_response_window'):
+                    QtCore.QMetaObject.invokeMethod(
+                        self.current_response_window,
+                        'set_text',
+                        QtCore.Qt.ConnectionType.QueuedConnection,
+                        QtCore.Q_ARG(str, response)
+                    )
+                    logging.debug('Invoked set_text on response window')
+            else:
+                logging.debug('Getting response for direct replacement')
+                self.current_provider.get_response(system_instruction, prompt)
+                logging.debug('Response processed')
 
-            except Exception as e:
-                logging.error(f'An error occurred: {e}', exc_info=True)
-                self.show_message_signal.emit('Error', f'An error occurred: {e}')
+        except Exception as e:
+            logging.error(f'An error occurred: {e}', exc_info=True)
+            self.show_message_signal.emit('Error', f'An error occurred: {e}')
 
     @Slot(str, str)
     def show_message_box(self, title, message):

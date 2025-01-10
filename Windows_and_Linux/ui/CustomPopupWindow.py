@@ -18,23 +18,6 @@ class CustomPopupWindow(QtWidgets.QWidget):
         self.selected_text = selected_text
         logging.debug('Initializing CustomPopupWindow')
         self.init_ui()
-
-    # Load prompts from prompts.json
-    def load_prompts():
-        prompts_path = os.path.join(os.path.dirname(__file__), 'prompts.json')
-        with open(prompts_path, 'r') as file:
-            prompts = json.load(file)
-        return prompts
-
-    # Initialize the options array dynamically
-    def init_options(self):
-        prompts = load_prompts()
-        options = []
-        for key, value in prompts.items():
-            icon_path = value['icon'] + ('_dark' if colorMode == 'dark' else '_light') + '.png'
-            callback = getattr(self, value['callback'])
-            options.append((key, icon_path, callback))
-        return options
     
     def init_ui(self):
         """
@@ -43,6 +26,17 @@ class CustomPopupWindow(QtWidgets.QWidget):
         logging.debug('Setting up CustomPopupWindow UI')
         self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint | QtCore.Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
+        # Load options from JSON file
+        options_path = os.path.join(os.path.dirname(sys.argv[0]), 'options.json')
+        logging.debug(f'Loading options-file from {options_path}')
+        if os.path.exists(options_path):
+            with open(options_path, 'r', encoding='utf-8') as file:
+                options = json.load(file)
+                logging.debug('Config loaded successfully')
+        else:
+            logging.debug('Config file not found')
+            options = None
 
         # Set the window title
         self.setWindowTitle("Writing Tools")
@@ -100,6 +94,7 @@ class CustomPopupWindow(QtWidgets.QWidget):
 
         input_layout.addWidget(self.custom_input)
 
+        # Add send_button
         send_button = QtWidgets.QPushButton()
         send_button.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(sys.argv[0]), 'icons', 'send' + ('_dark' if colorMode == 'dark' else '_light') + '.png')))
         send_button.setStyleSheet(f"""
@@ -117,6 +112,24 @@ class CustomPopupWindow(QtWidgets.QWidget):
         send_button.clicked.connect(self.on_custom_change)
         input_layout.addWidget(send_button)
 
+        # Add replace_button
+        replace_button = QtWidgets.QPushButton()
+        replace_button.setIcon(QtGui.QIcon(os.path.join(os.path.dirname(sys.argv[0]), 'icons', 'replace' + ('_dark' if colorMode == 'dark' else '_light') + '.png')))
+        replace_button.setStyleSheet(f"""
+            QPushButton {{
+                background-color: {'#eba400' if colorMode == 'dark' else '#eba400'};
+                border: none;
+                border-radius: 8px;
+                padding: 5px;
+            }}
+            QPushButton:hover {{
+                background-color: {'#c98d02' if colorMode == 'dark' else '#c98d02'};
+            }}
+        """)
+        replace_button.setFixedSize(self.custom_input.sizeHint().height(), self.custom_input.sizeHint().height())
+        replace_button.clicked.connect(self.on_custom_replace)
+        input_layout.addWidget(replace_button)
+
         content_layout.addLayout(input_layout)
 
         if has_text:
@@ -124,9 +137,12 @@ class CustomPopupWindow(QtWidgets.QWidget):
             # Options grid
             options_grid = QtWidgets.QGridLayout()
             options_grid.setSpacing(10)
-            options = init_options(self)
 
-            for i, (label, icon_path, callback) in enumerate(options):
+            for i, option in enumerate(options):
+                label = option["label"]
+                icon_path = option["icon"] + ('_dark' if colorMode == 'dark' else '_light') + '.png'
+                callback = getattr(self, option["callback"])  # Get the method from the class instance using the callback name
+                
                 button = QtWidgets.QPushButton(label)
                 button.setStyleSheet(f"""
                     QPushButton {{
@@ -153,6 +169,21 @@ class CustomPopupWindow(QtWidgets.QWidget):
             content_layout.addLayout(options_grid)
         else:
             self.custom_input.setMinimumWidth(300)
+
+        # Add "Replace marked content" checkbox
+        self.replace_marked_checkbox = QtWidgets.QCheckBox("Replace marked content")
+        self.replace_marked_checkbox.setStyleSheet(f"""
+            QCheckBox {{
+                color: {'#ffffff' if colorMode == 'dark' else '#000000'};
+                font-size: 14px;
+            }}
+            QCheckBox::indicator {{
+                width: 16px;
+                height: 16px;
+            }}
+        """)
+        content_layout.addWidget(self.replace_marked_checkbox, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
+        
             
         # Add update notice if available
         if self.app.config.get("update_available", False):
@@ -193,6 +224,15 @@ class CustomPopupWindow(QtWidgets.QWidget):
         if custom_change:
             self.app.process_option('Custom', self.selected_text, custom_change)
             self.close()
+
+    def on_custom_replace(self):
+        """
+        Handle the custom change request from the user.
+        """
+        custom_change = self.custom_input.text()
+        if custom_change:
+            self.app.process_option('Custom_Replace', self.selected_text, custom_change)
+            self.close()    
 
     def on_proofread(self):
         """
