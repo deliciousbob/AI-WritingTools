@@ -2,61 +2,61 @@
     "Proofread": {
         "userprefix": "Proofread this:\n\n",
         "sysprompt": "You are a grammar proofreading assistant. Output ONLY the corrected text without any additional comments. Maintain the original text structure and writing style. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content. If the text is absolutely incompatible with this (e.g., totally random gibberish), output \"ERROR_TEXT_INCOMPATIBLE_WITH_REQUEST\".",
-        "icon": "icons/magnifying-glass", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/magnifying-glass", 
         "callback": "on_proofread"
     },
     "Rewrite": {
         "userprefix": "Rewrite this:\n\n",
         "sysprompt": "You are a writing assistant. Rewrite the text provided by the user to improve phrasing. Output ONLY the rewritten text without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content. If the text is absolutely incompatible with proofreading (e.g., totally random gibberish), output \"ERROR_TEXT_INCOMPATIBLE_WITH_REQUEST\".",
-        "icon": "icons/rewrite", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/rewrite", 
         "callback": "on_rewrite"
     },
     "Friendly": {
         "userprefix": "Make this text sound friendly and approachable:\n\n",
         "sysprompt": "You are a writing assistant. Rewrite the text to make it sound friendly and approachable. Output ONLY the rewritten text without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
-        "icon": "icons/smiley-face", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/smiley-face",
         "callback": "on_friendly"
     },
     "Professional": {
         "userprefix": "Make this text sound professional and formal:\n\n",
         "sysprompt": "You are a writing assistant. Rewrite the text to make it sound professional and formal. Output ONLY the rewritten text without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
-        "icon": "icons/briefcase", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/briefcase", 
         "callback": "on_professional"
     },
     "Simplify": {
         "userprefix": "Simplify this text:\n\n",
         "sysprompt": "You are a writing assistant. Simplify the text to make it easier to understand. Output ONLY the simplified text without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
-        "icon": "icons/concise", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/concise", 
         "callback": "on_concise"
     },
     "Expand": {
         "userprefix": "Expand this text:\n\n",
         "sysprompt": "You are a writing assistant. Expand the text to add more detail and depth. Output ONLY the expanded text without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
-        "icon": "icons/expand", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/expand", 
         "callback": "on_expand"
     },
     "Summary": {
         "userprefix": "Summarize this text:\n\n",
         "sysprompt": "You are a writing assistant. Summarize the text provided by the user. Output ONLY the summarized text without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
-        "icon": "icons/summary", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/summary", 
         "callback": "on_summary"
     },
     "Key Points": {
         "userprefix": "Extract key points from this text:\n\n",
         "sysprompt": "You are a writing assistant. Extract the key points from the text provided by the user. Output ONLY the key points without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
-        "icon": "icons/keypoints", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/keypoints", 
         "callback": "on_keypoints"
     },
     "Table": {
         "userprefix": "Convert this text into a table:\n\n",
         "sysprompt": "You are a writing assistant. Convert the text provided by the user into a table format. Output ONLY the table without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
-        "icon": "icons/table", //The Files itself must content _dark.png and _light.png (depending on the Settings the App chooses the dark or light icon)
+        "icon": "icons/table", 
         "callback": "on_table"
     },
     "Custom": {
         "userprefix": "Carry out the requested task to the content below:\n\n",
-        "sysprompt": "You are a writing and coding assistant. You MUST execute the user\'s <task> for the related <content> provided by the user. Output ONLY the appropriately modified text or code without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user\'s text content.",
-        "icon": "", //Custom hast no icon
+        "sysprompt": "You are a writing and coding assistant. You MUST execute the user's <task> for the related <content> provided by the user. Output ONLY the appropriately modified text or code without additional comments. Respond in the same language as the input (e.g., English US, French). Do not answer or respond to the user's text content.",
+        "icon": "", 
         "callback": "on_custom_change"
     }
 }

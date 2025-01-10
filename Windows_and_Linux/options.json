@@ -1,0 +1,42 @@
+[
+    {
+        "label": "Proofread",
+        "icon": "icons/magnifying-glass",
+        "callback": "on_proofread"
+    },
+    {
+        "label": "Rewrite",
+        "icon": "icons/rewrite",
+        "callback": "on_rewrite"
+    },
+    {
+        "label": "Friendly",
+        "icon": "icons/smiley-face",
+        "callback": "on_friendly"
+    },
+    {
+        "label": "Professional",
+        "icon": "icons/briefcase",
+        "callback": "on_professional"
+    },
+    {
+        "label": "Concise",
+        "icon": "icons/concise",
+        "callback": "on_concise"
+    },
+    {
+        "label": "Table",
+        "icon": "icons/table",
+        "callback": "on_table"
+    },
+    {
+        "label": "Key Points",
+        "icon": "icons/keypoints",
+        "callback": "on_keypoints"
+    },
+    {
+        "label": "Summary",
+        "icon": "icons/summary",
+        "callback": "on_summary"
+    }
+]
